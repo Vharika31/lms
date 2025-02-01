@@ -1,0 +1,15 @@
+load("//tools:interop.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "initialize",
+    testonly = True,
+    srcs = glob(["**/*.ts"]),
+    data = [
+        "//:config-files",
+    ],
+    deps = [
+        "//tests/legacy-cli/e2e/utils:utils_rjs",
+    ],
+)

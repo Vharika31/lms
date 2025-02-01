@@ -1,0 +1,36 @@
+load("//tools:interop.bzl", "ts_project")
+load(":e2e.bzl", "e2e_suites")
+
+ts_project(
+    name = "runner",
+    testonly = True,
+    srcs = [
+        "e2e_runner.ts",
+    ],
+    data = [
+        "verdaccio.yaml",
+        "verdaccio_auth.yaml",
+    ],
+    deps = [
+        "//:node_modules/ansi-colors",
+        "//:node_modules/fast-glob",
+        "//packages/angular_devkit/core:core_rjs",
+        "//packages/angular_devkit/core/node:node_rjs",
+        "//tests/legacy-cli/e2e/utils:utils_rjs",
+    ],
+)
+
+e2e_suites(
+    name = "e2e",
+    data = [
+        ":runner",
+
+        # Tests + setup
+        # Loaded dynamically at runtime, not compiletime deps
+        "//tests/legacy-cli/e2e/assets",
+        "//tests/legacy-cli/e2e/setup",
+        "//tests/legacy-cli/e2e/initialize",
+        "//tests/legacy-cli/e2e/tests",
+    ],
+    runner = ":e2e_runner.ts",
+)

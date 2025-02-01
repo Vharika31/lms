@@ -1,0 +1,57 @@
+load("//tools:defaults2.bzl", "jasmine_test", "ts_project")
+
+# Copyright Google Inc. All Rights Reserved.
+#
+# Use of this source code is governed by an MIT-style license that can be
+# found in the LICENSE file at https://angular.dev/license
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "tools",
+    srcs = glob(
+        include = ["**/*.ts"],
+        exclude = [
+            "**/*_spec.ts",
+            "test/**/*.ts",
+        ],
+    ),
+    data = ["package.json"],
+    module_name = "@angular-devkit/schematics/tools",
+    deps = [
+        "//:node_modules/@types/node",
+        "//:node_modules/jsonc-parser",
+        "//:node_modules/rxjs",
+        "//packages/angular_devkit/schematics:node_modules/@angular-devkit/core",
+        "//packages/angular_devkit/schematics:schematics_rjs",
+        "//packages/angular_devkit/schematics/tasks:tasks_rjs",
+        "//packages/angular_devkit/schematics/tasks/node:node_rjs",
+    ],
+)
+
+ts_project(
+    name = "tools_test_lib",
+    testonly = True,
+    srcs = glob(
+        include = [
+            "**/*_spec.ts",
+            "test/**/*.ts",
+        ],
+    ),
+    deps = [
+        ":tools_rjs",
+        "//:node_modules/@types/jasmine",
+        "//:node_modules/rxjs",
+        "//packages/angular_devkit/schematics:node_modules/@angular-devkit/core",
+        "//packages/angular_devkit/schematics:schematics_rjs",
+        "//packages/angular_devkit/schematics/tasks:tasks_rjs",
+        "//packages/angular_devkit/schematics/testing:testing_rjs",
+        "//tests/angular_devkit/schematics/tools/file-system-engine-host:file_system_engine_host_test_lib_rjs",
+    ],
+)
+
+jasmine_test(
+    name = "tools_test",
+    data = [":tools_test_lib_rjs"],
+)
